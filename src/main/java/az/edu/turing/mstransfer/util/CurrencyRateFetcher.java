@@ -59,7 +59,6 @@ public class CurrencyRateFetcher {
                 String code = element.getAttribute("Code");
                 BigDecimal value = new BigDecimal(element.getElementsByTagName("Value").item(0).getTextContent());
 
-                // Save to Redis
                 redisTemplate.opsForValue().set(
                         REDIS_KEY_PREFIX + code,
                         value.toPlainString(),

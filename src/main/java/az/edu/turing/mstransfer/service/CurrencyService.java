@@ -1,8 +1,8 @@
 package az.edu.turing.mstransfer.service;
 
+import az.edu.turing.mstransfer.model.enums.Currency;
 import az.edu.turing.mstransfer.model.response.ExchangeRateResponse;
 import az.edu.turing.mstransfer.util.CurrencyRateFetcher;
-import az.edu.turing.mstransfer.model.enums.Currency;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,13 @@ public class CurrencyService {
     private final CurrencyRateFetcher currencyRateFetcher;
 
     public List<ExchangeRateResponse> getExchangeRates() {
+        try {
+            currencyRateFetcher.fetchExchangeRates();
+        } catch (Exception e) {
+            log.error("Failed to fetch exchange rates: {}", e.getMessage());
+            return List.of();
+        }
+
         return Arrays.stream(Currency.values())
                 .map(currency -> {
                     try {
