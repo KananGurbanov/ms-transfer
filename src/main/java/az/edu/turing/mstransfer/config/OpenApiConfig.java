@@ -1,4 +1,4 @@
-package az.edu.turing.mstransfer.auth;
+package az.edu.turing.mstransfer.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
