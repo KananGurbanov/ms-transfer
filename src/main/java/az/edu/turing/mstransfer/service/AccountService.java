@@ -56,6 +56,21 @@ public class AccountService{
         bankTransferRepository.deleteAllByAccountId(accountId);
     }
 
+    @Transactional
+    public void deleteAccountsById(String token) {
+        Long userId = authorizationHelperService.getUserId(token);
+        List<AccountEntity> accountEntities = accountRepository.findByUserId(userId);
+
+        if (accountEntities.isEmpty()) {
+            throw new NotFoundException(ERR_01.getErrorCode(), ERR_01.getErrorDescription());
+        }
+        accountRepository.deleteAll(accountEntities);
+
+        accountEntities.forEach(account ->
+                bankTransferRepository.deleteAllByAccountId(account.getId())
+        );
+    }
+
     public List<RetrieveAccountResponse> getAccounts(String token) {
         Long userId = authorizationHelperService.getUserId(token);
         return accountRepository.findByUserId(userId).stream().map(accountMapper::mapToDto).toList();

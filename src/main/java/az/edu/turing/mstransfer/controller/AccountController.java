@@ -39,6 +39,13 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAllAccountsByUser(@RequestHeader("Authorization") String auth) {
+        String token = authorizationHelperService.extractToken(auth);
+        accountService.deleteAccountsById(token);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @GetMapping
     public ResponseEntity<RestResponse<List<RetrieveAccountResponse>>> getAccounts(@RequestHeader("Authorization") String auth) {
         String token = authorizationHelperService.extractToken(auth);
