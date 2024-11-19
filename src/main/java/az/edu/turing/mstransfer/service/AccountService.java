@@ -28,6 +28,8 @@ public class AccountService{
     private final AuthorizationHelperService authorizationHelperService;
 
     public void createAccount(String token, final CreateAccountRequest request) {
+        authorizationHelperService.validateAccessToken(token);
+
         Long userId = authorizationHelperService.getUserId(token);
         boolean exists = accountRepository.existsByUserIdAndPassword(userId, request.password());
 
@@ -48,6 +50,8 @@ public class AccountService{
 
     @Transactional
     public void deleteAccount(String token, Long accountId) {
+        authorizationHelperService.validateAccessToken(token);
+
         Long userId = authorizationHelperService.getUserId(token);
         AccountEntity accountEntity = accountRepository.findByIdAndUserId(accountId, userId)
                 .orElseThrow(() -> new NotFoundException(ERR_01.getErrorCode(), ERR_01.getErrorDescription()));
@@ -58,6 +62,8 @@ public class AccountService{
 
     @Transactional
     public void deleteAccountsById(String token) {
+        authorizationHelperService.validateAccessToken(token);
+
         Long userId = authorizationHelperService.getUserId(token);
         List<AccountEntity> accountEntities = accountRepository.findByUserId(userId);
 
@@ -72,11 +78,15 @@ public class AccountService{
     }
 
     public List<RetrieveAccountResponse> getAccounts(String token) {
+        authorizationHelperService.validateAccessToken(token);
+
         Long userId = authorizationHelperService.getUserId(token);
         return accountRepository.findByUserId(userId).stream().map(accountMapper::mapToDto).toList();
     }
 
     public RetrieveAccountResponse getAccount(String token, Long accountId) {
+        authorizationHelperService.validateAccessToken(token);
+
         Long userId = authorizationHelperService.getUserId(token);
         AccountEntity accountEntity = accountRepository.findByIdAndUserId(accountId, userId)
                 .orElseThrow(() -> new NotFoundException(ERR_01.getErrorCode(), ERR_01.getErrorDescription()));

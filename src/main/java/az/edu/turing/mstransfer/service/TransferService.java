@@ -36,6 +36,8 @@ public class TransferService {
 
     @Transactional
     public void makeBankTransfer(String token, Long accountId, BankTransferRequest transferDto) {
+        authorizationHelperService.validateAccessToken(token);
+
         Long userId = authorizationHelperService.getUserId(token);
         AccountEntity fromAccount = accountService.getActiveAccount(userId, accountId);
         if (fromAccount.getIban().equals(transferDto.toIban())) {
@@ -86,6 +88,8 @@ public class TransferService {
 
     @Transactional
     public void topUp(String token, Long accountId, TopUpRequest request) {
+        authorizationHelperService.validateAccessToken(token);
+
         Long userId = authorizationHelperService.getUserId(token);
         AccountEntity toAccount = accountService.getActiveAccount(userId, accountId);
         if (toAccount.getIban().equals(request.fromIban())) {

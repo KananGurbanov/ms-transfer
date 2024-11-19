@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Pattern(
-        regexp = "^AZ\\d{2}[A-Z]{3,4}\\d{20}$\n",
+        regexp = "^AZ\\d{2}[A-Z]{3,4}\\d{20}$",
         message = "Iban should be valid"
 )
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
