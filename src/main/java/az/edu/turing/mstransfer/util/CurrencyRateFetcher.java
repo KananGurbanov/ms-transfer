@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
@@ -58,6 +59,12 @@ public class CurrencyRateFetcher {
                 Element element = (Element) node;
                 String code = element.getAttribute("Code");
                 BigDecimal value = new BigDecimal(element.getElementsByTagName("Value").item(0).getTextContent());
+
+
+                if ("RUB".equals(code)) {
+                    value = value.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
+                }
+
 
                 redisTemplate.opsForValue().set(
                         REDIS_KEY_PREFIX + code,
