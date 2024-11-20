@@ -95,7 +95,7 @@ public class TransferService {
         if (toAccount.getIban().equals(request.fromIban())) {
             throw new BadRequestException(ERR_05.getErrorCode(), ERR_05.getErrorDescription());
         }
-        AccountEntity fromAccount = accountService.getAccountEntityByIban(request.fromIban());
+        AccountEntity fromAccount = accountService.getAccountEntityByIbanAndAccountNumber(request.fromIban(), request.fromAccountNumber());
 
         log.info("status {}", fromAccount.getStatus());
 

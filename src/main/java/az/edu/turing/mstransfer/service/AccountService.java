@@ -102,4 +102,9 @@ public class AccountService{
         return accountRepository.findByIban(iban)
                 .orElseThrow(() -> new NotFoundException(ERR_01.getErrorCode(), ERR_01.getErrorCode()));
     }
+
+    public AccountEntity getAccountEntityByIbanAndAccountNumber(String iban, String accountNumber) {
+        return accountRepository.findByIbanAndAccountNumber(iban, accountNumber)
+                .orElseThrow(() -> new NotFoundException(ERR_01.getErrorCode(), ERR_01.getErrorCode()));
+    }
 }
