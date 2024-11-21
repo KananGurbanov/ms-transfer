@@ -6,7 +6,7 @@ RUN gradle build --no-daemon
 ##########
 
 FROM openjdk:17-jdk-slim
-EXPOSE 8081
+EXPOSE 8082
 RUN mkdir /app
 ENV TZ=UTC
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/app.jar
