@@ -3,9 +3,9 @@ spring:
     name: ms-transfer
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://autorack.proxy.rlwy.net:44391/railway}
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/ms_transfer}
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:yeCelgbSVJEYDKjokUlvRhQDkxvqsMFx}
+    password: ${DB_PASSWORD:postgres}
   jpa:
     hibernate:
       ddl-auto: validate
