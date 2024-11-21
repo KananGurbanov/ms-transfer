@@ -18,9 +18,9 @@ public record RetrieveAccountResponse(
         BigDecimal balance,
         AccountStatus status,
 
-        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:SS")
+        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime createdAt,
 
-        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:SS")
+        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime updatedAt) {
 }

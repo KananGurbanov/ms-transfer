@@ -5,6 +5,7 @@ import az.edu.turing.mstransfer.model.response.ExchangeRateResponse;
 import az.edu.turing.mstransfer.util.CurrencyRateFetcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -19,12 +20,27 @@ public class CurrencyService {
 
     private final CurrencyRateFetcher currencyRateFetcher;
 
+    private final RedisTemplate<String, String> redisTemplate;
+
     public List<ExchangeRateResponse> getExchangeRates() {
-        try {
-            currencyRateFetcher.fetchExchangeRates();
-        } catch (Exception e) {
-            log.error("Failed to fetch exchange rates: {}", e.getMessage());
-            return List.of();
+        boolean allRatesAvailable = Arrays.stream(Currency.values())
+                .allMatch(currency -> {
+                    if (currency == Currency.AZN) {
+                        return true;
+                    }
+                    String redisKey = "currency:" + currency.name();
+                    String rate = redisTemplate.opsForValue().get(redisKey);
+                    return rate != null;
+                });
+
+        if (!allRatesAvailable) {
+            try {
+                log.info("Fetching exchange rates from external source...");
+                currencyRateFetcher.fetchExchangeRates();
+            } catch (Exception e) {
+                log.error("Failed to fetch exchange rates: {}", e.getMessage());
+                return List.of();
+            }
         }
 
         return Arrays.stream(Currency.values())
