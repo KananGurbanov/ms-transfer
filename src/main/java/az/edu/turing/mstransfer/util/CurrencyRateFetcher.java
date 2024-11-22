@@ -3,6 +3,8 @@ package az.edu.turing.mstransfer.util;
 import az.edu.turing.mstransfer.exceptions.NotFoundException;
 import az.edu.turing.mstransfer.model.enums.Currency;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -29,6 +31,7 @@ public class CurrencyRateFetcher {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String REDIS_KEY_PREFIX = "currency:";
     private static final int CACHE_EXPIRATION_MINUTES = 1;
+    private static final Logger log = LoggerFactory.getLogger(CurrencyRateFetcher.class);
 
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -84,6 +87,9 @@ public class CurrencyRateFetcher {
         }
 
         String rateString = redisTemplate.opsForValue().get(REDIS_KEY_PREFIX + currency.name());
+
+        log.info("Rate for currency {} is {}", currency.name(), rateString);
+
         if (rateString == null) {
             throw new NotFoundException(ERR_03.getErrorCode(), ERR_03.getErrorDescription() + currency.name());
         }
