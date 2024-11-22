@@ -73,7 +73,10 @@ public class TransferService {
     }
 
     private BigDecimal calculateCommission(AccountEntity fromAccount, AccountEntity toAccount, BigDecimal amount) {
-        return fromAccount.getBank().equals(toAccount.getBank()) ? BigDecimal.ZERO : amount.divideToIntegralValue(BigDecimal.valueOf(100)).add(BigDecimal.ONE);
+        return fromAccount.getBank().equals(toAccount.getBank())
+                ? BigDecimal.ZERO
+                : amount.divideToIntegralValue(BigDecimal.valueOf(100).multiply(fetcher.getRate(fromAccount.getCurrency())))
+                .add(BigDecimal.ONE);
     }
 
     private void saveTransaction(AccountEntity account, Direction direction, BigDecimal amount, String commission, String message) {
