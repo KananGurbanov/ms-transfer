@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
+
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
@@ -43,6 +45,7 @@ public class CustomExceptionHandler {
                         .errorDetail(errorMessage)
                         .path(path)
                         .status(status.value())
+                        .timestamp(LocalDateTime.now())
                         .build());
     }
 
