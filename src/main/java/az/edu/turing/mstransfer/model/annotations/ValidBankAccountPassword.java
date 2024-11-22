@@ -11,10 +11,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Pattern(
-    regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])(?=\\S+$).{10,}$", 
-    message = "Password must be at least 10 characters long, " +
-            "contain at least one uppercase letter, one lowercase letter," +
-            " one number, one special character, and no spaces."
+    regexp = "^\\d{4}$",
+    message = "Password must be 4 numbers long"
 )
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
