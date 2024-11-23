@@ -1,6 +1,6 @@
 package az.edu.turing.mstransfer.service;
 
-import az.edu.turing.mstransfer.auth.AuthorizationHelperService;
+import az.edu.turing.mstransfer.client.MsAuthClient;
 import az.edu.turing.mstransfer.dao.entity.AccountEntity;
 import az.edu.turing.mstransfer.dao.entity.TransactionEntity;
 import az.edu.turing.mstransfer.dao.reposiitory.AccountRepository;
@@ -32,13 +32,13 @@ public class TransferService {
     private final AccountRepository accountRepository;
     private final BankTransferRepository bankTransferRepository;
     private final CurrencyRateFetcher fetcher;
-    private final AuthorizationHelperService authorizationHelperService;
+    private final MsAuthClient authClient;
 
     @Transactional
     public void makeBankTransfer(String token, Long accountId, BankTransferRequest transferDto) {
-        authorizationHelperService.validateAccessToken(token);
+        authClient.validateAccessToken(token);
 
-        Long userId = authorizationHelperService.getUserId(token);
+        Long userId = authClient.getUserId(token);
         AccountEntity fromAccount = accountService.getActiveAccount(userId, accountId);
         if (fromAccount.getIban().equals(transferDto.toIban())) {
             throw new BadRequestException(ERR_05.getErrorCode(), ERR_05.getErrorDescription());
@@ -88,9 +88,9 @@ public class TransferService {
 
     @Transactional
     public void topUp(String token, Long accountId, TopUpRequest request) {
-        authorizationHelperService.validateAccessToken(token);
+        authClient.validateAccessToken(token);
 
-        Long userId = authorizationHelperService.getUserId(token);
+        Long userId = authClient.getUserId(token);
         AccountEntity toAccount = accountService.getActiveAccount(userId, accountId);
         if (toAccount.getIban().equals(request.fromIban())) {
             throw new BadRequestException(ERR_05.getErrorCode(), ERR_05.getErrorDescription());

@@ -28,11 +28,8 @@ spring:
 server:
   port: 8082
 
-
-application:
-  security:
-    secret-key: c2VjdXJlLXNlY3JldC1rZXktZm9yLUpXVC1lbmNyeXB0aW9uLTMyYnl0ZXM=
-    jwt:
-      expiration: 900000
-      refresh-token:
-        expiration: 86400000
+feign:
+  client:
+    config:
+      ms-auth-client:
+        url: https://ms-auth-dev.up.railway.app/api/v1/auth/helper

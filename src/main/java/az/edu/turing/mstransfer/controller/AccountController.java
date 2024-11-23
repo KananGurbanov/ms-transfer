@@ -1,6 +1,6 @@
 package az.edu.turing.mstransfer.controller;
 
-import az.edu.turing.mstransfer.auth.AuthorizationHelperService;
+import az.edu.turing.mstransfer.client.MsAuthClient;
 import az.edu.turing.mstransfer.model.RestResponse;
 import az.edu.turing.mstransfer.model.request.CreateAccountRequest;
 import az.edu.turing.mstransfer.model.response.RetrieveAccountResponse;
@@ -23,32 +23,32 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
-    private final AuthorizationHelperService authorizationHelperService;
+    private final MsAuthClient authClient;
 
     @PostMapping
     public ResponseEntity<Void> createAccount(@RequestHeader("Authorization") String auth, @RequestBody @Valid CreateAccountRequest request) {
-        String token = authorizationHelperService.extractToken(auth);
+        String token = authClient.extractToken(auth);
         accountService.createAccount(token, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAccount(@RequestHeader("Authorization") String auth, @PathVariable Long id) {
-        String token = authorizationHelperService.extractToken(auth);
+        String token = authClient.extractToken(auth);
         accountService.deleteAccount(token, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteAllAccountsByUser(@RequestHeader("Authorization") String auth) {
-        String token = authorizationHelperService.extractToken(auth);
+        String token = authClient.extractToken(auth);
         accountService.deleteAccountsById(token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping
     public ResponseEntity<RestResponse<List<RetrieveAccountResponse>>> getAccounts(@RequestHeader("Authorization") String auth) {
-        String token = authorizationHelperService.extractToken(auth);
+        String token = authClient.extractToken(auth);
         List<RetrieveAccountResponse> accounts = accountService.getAccounts(token);
 
         RestResponse<List<RetrieveAccountResponse>> restResponse = RestResponse.<List<RetrieveAccountResponse>>builder()
@@ -61,7 +61,7 @@ public class AccountController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RestResponse<RetrieveAccountResponse>> getAccount(@RequestHeader("Authorization") String auth, @PathVariable Long id) {
-        String token = authorizationHelperService.extractToken(auth);
+        String token = authClient.extractToken(auth);
         RetrieveAccountResponse account = accountService.getAccount(token, id);
 
         RestResponse<RetrieveAccountResponse> restResponse = RestResponse.<RetrieveAccountResponse>builder()

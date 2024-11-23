@@ -1,6 +1,6 @@
 package az.edu.turing.mstransfer.service;
 
-import az.edu.turing.mstransfer.auth.AuthorizationHelperService;
+import az.edu.turing.mstransfer.client.MsAuthClient;
 import az.edu.turing.mstransfer.dao.entity.AccountEntity;
 import az.edu.turing.mstransfer.dao.reposiitory.AccountRepository;
 import az.edu.turing.mstransfer.dao.reposiitory.BankTransferRepository;
@@ -25,12 +25,12 @@ public class AccountService{
     private final AccountRepository accountRepository;
     private final BankTransferRepository bankTransferRepository;
     private final AccountMapper accountMapper;
-    private final AuthorizationHelperService authorizationHelperService;
+    private final MsAuthClient msAuthClient;
 
     public void createAccount(String token, final CreateAccountRequest request) {
-        authorizationHelperService.validateAccessToken(token);
+        msAuthClient.validateAccessToken(token);
 
-        Long userId = authorizationHelperService.getUserId(token);
+        Long userId = msAuthClient.getUserId(token);
         boolean exists = accountRepository.existsByUserIdAndPassword(userId, request.password());
 
         if (exists) {
@@ -50,9 +50,9 @@ public class AccountService{
 
     @Transactional
     public void deleteAccount(String token, Long accountId) {
-        authorizationHelperService.validateAccessToken(token);
+        msAuthClient.validateAccessToken(token);
 
-        Long userId = authorizationHelperService.getUserId(token);
+        Long userId = msAuthClient.getUserId(token);
         AccountEntity accountEntity = accountRepository.findByIdAndUserId(accountId, userId)
                 .orElseThrow(() -> new NotFoundException(ERR_01.getErrorCode(), ERR_01.getErrorDescription()));
         accountRepository.delete(accountEntity);
@@ -62,9 +62,9 @@ public class AccountService{
 
     @Transactional
     public void deleteAccountsById(String token) {
-        authorizationHelperService.validateAccessToken(token);
+        msAuthClient.validateAccessToken(token);
 
-        Long userId = authorizationHelperService.getUserId(token);
+        Long userId = msAuthClient.getUserId(token);
         List<AccountEntity> accountEntities = accountRepository.findByUserId(userId);
 
         if (!accountEntities.isEmpty()) {
@@ -74,16 +74,16 @@ public class AccountService{
     }
 
     public List<RetrieveAccountResponse> getAccounts(String token) {
-        authorizationHelperService.validateAccessToken(token);
+        msAuthClient.validateAccessToken(token);
 
-        Long userId = authorizationHelperService.getUserId(token);
+        Long userId = msAuthClient.getUserId(token);
         return accountRepository.findByUserId(userId).stream().map(accountMapper::mapToDto).toList();
     }
 
     public RetrieveAccountResponse getAccount(String token, Long accountId) {
-        authorizationHelperService.validateAccessToken(token);
+        msAuthClient.validateAccessToken(token);
 
-        Long userId = authorizationHelperService.getUserId(token);
+        Long userId = msAuthClient.getUserId(token);
         AccountEntity accountEntity = accountRepository.findByIdAndUserId(accountId, userId)
                 .orElseThrow(() -> new NotFoundException(ERR_01.getErrorCode(), ERR_01.getErrorDescription()));
         return accountMapper.mapToDto(accountEntity);
